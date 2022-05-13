@@ -1,4 +1,4 @@
-# Wave-Portal
+# Wave-Portal-blockchain
 
 Send messages to the blockchain, and stand a chance to win some ether
 
