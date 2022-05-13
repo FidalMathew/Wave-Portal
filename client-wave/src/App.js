@@ -5,6 +5,9 @@ import wavePortal from './utils/WavePortal.json';
 
 const App = () => {
   const [currentAccount, setCurrentAccount] = useState("");
+  const [messageInput, setMessageInput] = useState("");
+  const [gifOn, setGifOn] = useState(false);
+
   const [allWaves, setAllWaves] = useState([]);
   const contractAddress = "0xcDb92Efa941b936fFEeA2Dc69dF624F27E4ed9A5";
   const contractABI = wavePortal.abi;
@@ -127,13 +130,18 @@ const App = () => {
         let count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
 
-        let message = "hi how are u?"
-        const waveTxn = await wavePortalContract.wave(message, { gasLimit: 300000 })
+
+        setGifOn(true);
+        const waveTxn = await wavePortalContract.wave(messageInput, { gasLimit: 300000 })
+        setMessageInput("");
 
         console.log("Mining...", waveTxn.hash);
 
         await waveTxn.wait();
         console.log("Mined -- ", waveTxn.hash);
+
+        setGifOn(false);
+
 
         count = await wavePortalContract.getTotalWaves();
         console.log("Retrieved total wave count...", count.toNumber());
@@ -147,21 +155,37 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-    console.log("ehl")
 
-  }, [])
+  }, [currentAccount])
 
   return (
     <div className="mainContainer">
       <div className="dataContainer">
         <div className="header">
-          <span role="img" >👋</span>  Hey there!
+          <span role="img" >👋</span>  Wave Portal
+
+
         </div>
+        <div style={{ marginTop: "30px" }}>
+          Send us a message, and stand a chance to win some cash
+        </div>
+        {
+          currentAccount &&
+          (<>
 
+            <input type="text" onChange={(e) => setMessageInput(e.target.value)} value={messageInput} />
 
-        <button className="waveButton" onClick={wave}>
-          Wave at Me
-        </button>
+            <button className="waveButton" onClick={wave}>
+              Wave at Me
+            </button>
+            <div style={{ background: "#e3d3ff", padding: "12px", marginTop: "10px" }}>Connected: {currentAccount}</div>
+            <h2 style={{ marginTop: "30px" }}>
+              Messages:
+            </h2>
+
+          </>)
+
+        }
 
         {!currentAccount && (
           <button className="waveButton" onClick={connectWallet}>
@@ -169,14 +193,22 @@ const App = () => {
           </button>
         )}
 
-        {allWaves.map((wave, index) => {
-          return (
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-              <div>Address: {wave.address}</div>
-              <div>Time: {wave.timestamp.toString()}</div>
-              <div>Message: {wave.message}</div>
-            </div>)
-        })}
+        {gifOn && (<div style={{ textAlign: "center" }}>
+
+          <iframe src="https://giphy.com/embed/3oEjI6SIIHBdRxXI40" width="200" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+        </div>)
+        }
+        {
+
+          !gifOn &&
+          allWaves.map((wave, index) => {
+            return (
+              <div key={index} className="messageBox">
+                <div>Address: {wave.address}</div>
+                <div>Time: {wave.timestamp.toString()}</div>
+                <div>Message: {wave.message}</div>
+              </div>)
+          })}
       </div>
     </div>
   );

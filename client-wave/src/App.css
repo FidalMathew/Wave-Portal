@@ -30,5 +30,19 @@
   padding: 8px;
   border: 0;
   border-radius: 5px;
-  
+  background-color: blueviolet;
+  color: white;
+  transition: 5ms;
+
+}
+.waveButton:hover{
+  box-shadow: 1px 3px 6px 1px #000000;
+
+}
+.messageBox{
+  background-color: #fff4df; 
+  margin-top: 16px; 
+  padding: 8px; 
+  border: rgb(0, 0, 0) 2px solid;
+  border-radius: 10px;
 }
